@@ -1,7 +1,7 @@
 
 ERLC_OPTS += -Wall -Werror -v
 
-PROJECT = rabbit_presence_exchange
+PROJECT = rabbitmq_presence_exchange
 PROJECT_DESCRIPTION = RabbitMQ Presence Exchange Plugin
 PROJECT_MOD = presence_exchange_app
 
@@ -11,6 +11,9 @@ PROJECT_MOD = presence_exchange_app
 #	  ]
 #endef
 
+# sets the current version of rabbit rather than working of master
+current_rmq_ref = v3.12.6
+ 
 DEPS = rabbit_common rabbit amqp_client
 TEST_DEPS = rabbitmq_ct_helpers rabbitmq_ct_client_helpers
 
