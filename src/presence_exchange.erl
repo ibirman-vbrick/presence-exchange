@@ -78,9 +78,7 @@ policy_changed(_X1, _X2) -> ok.
 %% within the exchange.
 deliver(Delivery = #delivery{message = #basic_message{exchange_name = XName,
                                                       routing_keys = RoutingKeys}}) ->
-    logger:error("H1", XName, RoutingKeys),
     QueueNames = rabbit_router:match_routing_key(XName, RoutingKeys, false),
-    logger:error("H2", QueueNames),
     Queues = rabbit_amqqueue:lookup(QueueNames),
     rabbit_amqqueue:deliver(Queues, Delivery).
 
@@ -117,7 +115,6 @@ add_binding(none, #exchange{name = XName}, #binding{key = ?LISTENER_KEY,
     end,
     ok;
 add_binding(none, #exchange{name = XName}, B) ->
-    logger:error("H0", B),
     deliver(encode_binding_delivery(XName, bind, B)),
     ok;
 add_binding(transaction, _Exchange, _Binding) ->
