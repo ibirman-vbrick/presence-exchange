@@ -17,8 +17,8 @@
                     {requires,    rabbit_registry},
                     {enables,     kernel_ready}]}).
 
--export([description/0, serialise_events/0, route/2]).
--export([validate/1, validate_binding/2, create/2, delete/3,
+-export([description/0, serialise_events/0, route/2, route/3]).
+-export([validate/1, validate_binding/2, create/2, delete/2,
          policy_changed/2,
          add_binding/3, remove_bindings/3, assert_args_equivalence/2]).
 -export([info/1, info/2]).
@@ -49,11 +49,13 @@ serialise_events() -> false.
 
 route(_Exchange, _Delivery) ->
     [].
+route(_Exchange, _Delivery, _X) ->
+    [].
 
 validate(_X) -> ok.
 validate_binding(_X, _B) -> ok.
-create(_Tx, _X) -> ok.
-delete(_Tx, _X, _Bs) -> ok.
+create(_Serial, _X) -> ok.
+delete(_Serial, _X) -> ok.
 policy_changed(_X1, _X2) -> ok.
 
 %% This code is based on the publish/2 code in rabbit_basic.erl, with
@@ -66,7 +68,7 @@ policy_changed(_X1, _X2) -> ok.
 deliver(Delivery = #delivery{message = #basic_message{exchange_name = XName,
                                                       routing_keys = RoutingKeys}}) ->
     QueueNames = rabbit_router:match_routing_key(XName, RoutingKeys),
-    Queues = rabbit_amqqueue:lookup(QueueNames),
+    Queues = rabbit_amqqueue:lookup_many(QueueNames),
     rabbit_amqqueue:deliver(Queues, Delivery).
 
 announce_initial_bindings(XName, Dest) ->
